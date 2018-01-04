@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    .outer{
+        background-color:blue;
+        padding:20px;
+    }
+    .inner{
+        background-color:gold;
+        padding:20px;
+    }
+    .box{
+        width:50px;
+        height:50px;
+        background-color:red;
+    }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="inner">
+            <button>버튼</button>
+        </div>
+        <a href="https://www.google.co.kr/">google</a>
+    </div>
+    <div class="box">
+        particle
+    </div>
+    <script>
+
+        document.querySelector('.outer').addEventListener('click', e => {
+            //outer.classList.add('clicked');
+            e.currentTarget.classList.add('clicked');
+            alert('outer가 클릭되었습니다.');
+            console.log(e.target); //실제로 이벤트가 일어나는 요소
+            console.log(e.currentTarget); //이벤트 리스너를 등록한 요소
+        });
+        document.querySelector('button').addEventListener('click', e => {
+            alert('버튼이 클릭되었습니다.');
+            e.stopPropagation();
+        });
+        document.querySelector('a').addEventListener('click', e => {
+            alert('a링크가 클릭되었습니다.');
+            e.preventDefault();
+        });
+
+        const box = document.querySelector('.box');
+        box.addEventListener('mousedown', e => {
+            console.log('mousedown');
+        });
+        box.addEventListener('mouseup', e => {
+            console.log('mouseup');
+        });
+        box.addEventListener('mousemove', e => {
+            console.log(e.clientX, e.clientY);
+        })
+        box.addEventListener('click', e => {
+            console.log('click');
+        })
+    </script>
+</body>
+</html>
