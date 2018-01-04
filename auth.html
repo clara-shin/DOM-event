@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .profile-img{
+      width:100px;
+      height:100px;
+    }
+    .remove{
+      display:none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <button type="button" class="login">
+      로그인
+    </button>
+    <!-- <p>로그인 성공</p> -->
+  </div>
+  <img src="" alt="" class="profile-img">
+  <div class="display-name"></div>
+  <div class="email"></div>
+  <ul class="repo-list"></ul>
+
+
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCBu_Q3izeQsGQQ4u_Iwfo3CnSzRd7urLE",
+      authDomain: "fds7-shj.firebaseapp.com",
+      databaseURL: "https://fds7-shj.firebaseio.com",
+      projectId: "fds7-shj",
+      storageBucket: "",
+      messagingSenderId: "911099515431"
+    };
+    firebase.initializeApp(config);
+  </script>
+
+  <script>
+    var provider = new firebase.auth.GithubAuthProvider(); //깃헙 로그인 준비작업
+    document.querySelector('.login').addEventListener('click', async e => { //e 를 비동기함수로 바꾸어보자
+      //팝업 창을 사용해서 로그인하려면 다음과 같이 signInWithPopup을 호출
+      const result = await firebase.auth().signInWithPopup(provider);
+
+      // This gives you a GitHub Access Token. You can use it to access the GitHub API.
+      var token = result.credential.accessToken;
+      // The signed-in user info.
+      var user = result.user;
+      // ...
+      console.log(token);
+      console.log(user);
+      console.log(user.displayName);
+      console.log(user.email);
+      console.log(user.photoURL);
+
+
+      let displayName = document.querySelector('.display-name');
+      let email = document.querySelector('.email');
+      let profileImg = document.querySelector('.profile-img');
+
+      document.querySelector('.login-box').classList.add('remove');
+      displayName.textContent = user.displayName;
+      email.textContent = user.email;
+      profileImg.src = user.photoURL;
+
+      //https://api.github.com/user/repos?access_token=OAUTH-TOKEN
+      const res = await fetch(`https://api.github.com/user/repos?access_token=${token}`);
+      const repos = await res.json();
+      console.log(repos);
+
+      repos.forEach(repo => {
+        const repoEl = document.createElement('li');
+        repoEl.textContent = repo.full_name;
+        document.querySelector('.repo-list').appendChild(repoEl);
+      });
+
+
+        //https://api.github.com/user/repos?access_token=OAUTH-TOKEN
+        //https://api.github.com/user/repos?access_token=ac4b3e01c306e48c4766ef941b8786f65e231c54
+
+
+    });
+    //promise 예외처리
+    /*.catch(function (error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+    });*/
+  </script>
+</body>
+</html>
