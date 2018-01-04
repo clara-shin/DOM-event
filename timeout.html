@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <input id="debounce" type="text">
+  <input id="throttle" type="text">
+  <div></div>
+  <script>
+
+
+  function debounce(cb, time) {
+    let timeoutId;
+    return function () {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        cb();
+        timeoutId = null;
+      }, time)
+    }
+  }
+  const debounceListener = debounce( () => {
+    alert('hello');
+  }, 2000); //2초가 지나면 alert
+
+  function throttle(cb, time) {
+    let throttled = false;
+    let timeoutId;
+    return function () {
+      if (!timeoutId) {
+        timeoutId = setTimeout(() => {
+          throttled = false;
+          timeoutId = null;
+        }, time);
+      }
+      if (!throttled) {
+        cb();
+      }
+      throttled = true;
+    }
+  }
+  const throttleedAppendChat = throttle(function (){
+    const chatInput = document.querySelector('#throttle');
+    const pEl = document.createElement('p');
+    pEl.textContent = chatInput.value;
+    document.querySelector('div').appendChild(pEl);
+    chatInput.value = '';
+  }, 5000); //5초후에
+
+  document.querySelector('#debounce').addEventListener('input', debounceListener);
+  document.querySelector('#throttle').addEventListener('keydown', e => {
+    console.log(e);
+    console.log(e.currentTarget.value);
+    if(e.key === 'Enter'){
+      throttleedAppendChat();
+    }
+  });
+
+
+  </script>
+</body>
+</html>
